@@ -112,7 +112,7 @@ function render() {
     <div class="header">
       <div>
         <h1>ð¯ Outreach Command Center</h1>
-        <div class="sub">Live from Supabase Â· Auto-refreshes every 60s Â· ${new Date().toLocaleTimeString()}</div>
+        <div class="sub">Live from Supabase · Auto-refreshes every 60s · ${new Date().toLocaleTimeString()}</div>
       </div>
       <button class="btn" onclick="showAddModal()">+ Add Prospect</button>
     </div>
@@ -141,7 +141,7 @@ function render() {
             <tbody>
               ${filtered.length === 0 ? '<tr><td colspan="7" class="empty">No prospects in this status</td></tr>' :
                 filtered.map(p => `<tr>
-                  <td><div class="company-name">${esc(p.company_name)}</div><div class="company-detail">${esc(p.industry||'')} ${p.company_size ? 'Â· '+p.company_size : ''}</div></td>
+                  <td><div class="company-name">${esc(p.company_name)}</div><div class="company-detail">${esc(p.industry||'')} ${p.company_size ? '· '+p.company_size : ''}</div></td>
                   <td style="color:var(--muted)">${esc(p.job_title||'â')}</td>
                   <td><div>${esc(p.decision_maker||'â')}</div>${p.dm_title ? '<div class="company-detail">'+esc(p.dm_title)+'</div>' : ''}</td>
                   <td>${p.service_fit ? `<span class="badge" style="background:${SERVICE_COLORS[p.service_fit]}22;color:${SERVICE_COLORS[p.service_fit]}">${p.service_fit}</span>` : 'â'}</td>

@@ -1,66 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Outreach Command Center</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0f1117; --card: #1a1d27; --border: #2a2e3a; --text: #e4e4e7;
-  --muted: #8b8fa3; --accent: #6366f1; --green: #22c55e; --yellow: #eab308;
-  --red: #ef4444; --blue: #3b82f6; --purple: #a855f7; --orange: #f97316; --cyan: #06b6d4;
-}
-body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-.header { padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-.header h1 { font-size: 22px; font-weight: 700; }
-.header .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
-.container { padding: 28px; max-width: 1400px; margin: 0 auto; }
-.metrics { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-.metric-card { background: var(--card); border-radius: 12px; padding: 20px 24px; border: 1px solid var(--border); flex: 1; min-width: 150px; }
-.metric-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.metric-value { font-size: 32px; font-weight: 700; line-height: 1.1; }
-.metric-sub { color: var(--muted); font-size: 12px; margin-top: 6px; }
-.charts { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
-.chart-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
-.chart-title { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
-.table-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-.table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.table-header h3 { font-size: 16px; }
-.filters { display: flex; gap: 4px; flex-wrap: wrap; }
-.filter-btn { padding: 4px 10px; border-radius: 6px; border: none; font-size: 11px; cursor: pointer; background: var(--bg); color: var(--muted); }
-.filter-btn.active { background: var(--accent); color: #fff; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-th { padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
-td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-.company-name { font-weight: 500; }
-.company-detail { color: var(--muted); font-size: 11px; }
-.badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-.status-select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; cursor: pointer; background: var(--bg); color: var(--text); }
-.btn { padding: 10px 20px; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
-.btn:hover { opacity: 0.9; }
-.link { color: var(--accent); text-decoration: none; font-size: 12px; }
-.link:hover { text-decoration: underline; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
-.modal { background: var(--card); border-radius: 16px; padding: 28px; width: 480px; max-height: 80vh; overflow: auto; border: 1px solid var(--border); }
-.modal h3 { margin-bottom: 20px; }
-.modal input, .modal select, .modal textarea { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; margin-bottom: 12px; }
-.modal textarea { resize: vertical; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.empty { padding: 40px; text-align: center; color: var(--muted); }
-.loading { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; }
-.loading .icon { font-size: 40px; margin-bottom: 12px; }
-@media (max-width: 900px) { .charts { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .metrics { flex-direction: column; } .form-row { grid-template-columns: 1fr; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outreach Command Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0f1117; --card: #1a1d27; --border: #2a2e3a; --text: #e4e4e7;
+            --muted: #8b8fa3; --accent: #6366f1; --green: #22c55e; --yellow: #eab308;
+            --red: #ef4444; --blue: #3b82f6; --purple: #a855f7; --orange: #f97316; --cyan: #06b6d4;
+        }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .header { padding: 20px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .header h1 { font-size: 22px; font-weight: 700; }
+        .header .sub { color: var(--muted); font-size: 12px; margin-top: 4px; }
+        .container { padding: 28px; max-width: 1400px; margin: 0 auto; }
+        .metrics { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        .metric-card { background: var(--card); border-radius: 12px; padding: 20px 24px; border: 1px solid var(--border); flex: 1; min-width: 150px; }
+        .metric-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+        .metric-value { font-size: 32px; font-weight: 700; line-height: 1.1; }
+        .metric-sub { color: var(--muted); font-size: 12px; margin-top: 6px; }
+        .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .chart-card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+        .chart-title { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+        .table-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .table-header h3 { font-size: 16px; }
+        .filters { display: flex; gap: 4px; flex-wrap: wrap; }
+        .filter-btn { padding: 4px 10px; border-radius: 6px; border: none; font-size: 11px; cursor: pointer; background: var(--bg); color: var(--muted); }
+        .filter-btn.active { background: var(--accent); color: #fff; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 10px 16px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        .company-name { font-weight: 600; }
+        .company-detail { color: var(--muted); font-size: 11px; margin-top: 2px; }
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+        .status-select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; cursor: pointer; background: var(--bg); color: var(--text); }
+        .link { color: var(--accent); text-decoration: none; font-size: 12px; }
+        .link:hover { text-decoration: underline; }
+        .btn { background: var(--accent); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600; }
+        .btn:hover { opacity: 0.9; }
+        .empty { text-align: center; padding: 32px; color: var(--muted); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; }
+        .modal { background: var(--card); border-radius: 12px; padding: 24px; width: 90%; max-width: 500px; border: 1px solid var(--border); }
+        .modal h3 { margin-bottom: 16px; }
+        .modal input, .modal select, .modal textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row > * { flex: 1; }
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); }
+        .loading .icon { font-size: 48px; margin-bottom: 16px; }
+        .loading div:last-child { color: var(--muted); font-size: 14px; }
+        @media (max-width: 768px) {
+            .charts { grid-template-columns: 1fr; }
+            .metrics { flex-direction: column; }
+        }
+    </style>
 </head>
 <body>
+    <div id="loading" class="loading">
+        <div class="icon">&#x1F4CB;</div>
+        <div>Loading Command Center...</div>
+    </div>
 
-<div id="app">
-  <div class="loading"><div class="icon">ð¯</div><div>Loading Command Center...</div></div>
-</div>
+    <div id="app" style="display:none">
+        <div class="header">
+            <div>
+                <h1>&#x1F4E1; Outreach Command Center</h1>
+                <div class="sub" id="subHeader">Live from Supabase &middot; Auto-refreshes every 60s</div>
+            </div>
+            <button class="btn" onclick="showAddModal()">+ Add Prospect</button>
+        </div>
+        <div class="container">
+            <div class="metrics">
+                <div class="metric-card"><div class="metric-label">Total Prospects</div><div class="metric-value" id="m-total">0</div><div class="metric-sub">in pipeline</div></div>
+                <div class="metric-card"><div class="metric-label">Emails Sent</div><div class="metric-value" id="m-emails" style="color:var(--blue)">0</div><div class="metric-sub" id="m-emails-sub">outreach started</div></div>
+                <div class="metric-card"><div class="metric-label">Responses</div><div class="metric-value" id="m-responses" style="color:var(--yellow)">0</div><div class="metric-sub" id="m-responses-sub">0% response rate</div></div>
+                <div class="metric-card"><div class="metric-label">Meetings</div><div class="metric-value" id="m-meetings" style="color:var(--orange)">0</div><div class="metric-sub" id="m-meetings-sub">0% meeting rate</div></div>
+                <div class="metric-card"><div class="metric-label">Deals Won</div><div class="metric-value" id="m-won" style="color:var(--green)">0</div><div class="metric-sub">closed</div></div>
+            </div>
+            <div class="charts">
+                <div class="chart-card"><div class="chart-title">Daily Activity</div><canvas id="activityChart" height="200"></canvas></div>
+                <div class="chart-card"><div class="chart-title">Pipeline Status</div><canvas id="statusChart" height="200"></canvas></div>
+            </div>
+            <div class="table-wrap">
+                <div class="table-header">
+                    <h3 id="pipelineCount">Pipeline (0)</h3>
+                    <div class="filters" id="filterBar"></div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead><tr><th>Company</th><th>Job Title</th><th>Decision Maker</th><th>Service Fit</th><th>Status</th><th>Found</th><th>Actions</th></tr></thead>
+                        <tbody id="tableBody"><tr><td colspan="7" class="empty">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script>
 const SUPABASE_URL = 'https://wxbcoxbugkhaeyshacie.supabase.co';
@@ -68,199 +107,258 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const STATUS_COLORS = {
-  'Not Started': '#6b7280', 'Researching': '#3b82f6', 'Email Sent': '#8b5cf6',
-  'Follow-Up 1': '#a855f7', 'Follow-Up 2': '#c084fc', 'Responded': '#eab308',
-  'Meeting Set': '#f97316', 'Won': '#22c55e', 'Lost': '#ef4444', 'Not a Fit': '#6b7280',
+    'Not Started': '#6b7280', 'Researching': '#3b82f6', 'Email Sent': '#8b5cf6',
+    'Follow-Up 1': '#a855f7', 'Follow-Up 2': '#c084fc', 'Responded': '#eab308',
+    'Meeting Set': '#f97316', 'Won': '#22c55e', 'Lost': '#ef4444', 'Not a Fit': '#6b7280'
 };
 const SERVICE_COLORS = {
-  'Marketing/Ads': '#3b82f6', 'AI App Building': '#a855f7', 'Automations': '#f97316',
-  'Consulting/Strategy': '#06b6d4', 'Multiple Services': '#22c55e',
+    'Marketing/Ads': '#3b82f6', 'AI App Building': '#a855f7', 'Automations': '#f97316',
+    'Consulting/Strategy': '#06b6d4', 'Multiple Services': '#22c55e'
 };
 const STATUSES = Object.keys(STATUS_COLORS);
-const SERVICES = Object.keys(SERVICE_COLORS);
 
-let prospects = [], metrics = [], currentFilter = 'All', activityChart = null, statusChart = null;
+let prospects = [], metrics = [], currentFilter = 'All';
+let activityChart = null, statusChart = null;
+let chartsInitialized = false;
 
+// --- Data fetching ---
 async function fetchData() {
-  const [pRes, mRes] = await Promise.all([
-    sb.from('prospects').select('*').order('created_at', { ascending: false }),
-    sb.from('daily_metrics').select('*').order('date', { ascending: true }),
-  ]);
-  if (pRes.data) prospects = pRes.data;
-  if (mRes.data) metrics = mRes.data;
-  render();
+    const [pRes, mRes] = await Promise.all([
+        sb.from('prospects').select('*').order('created_at', { ascending: false }),
+        sb.from('daily_metrics').select('*').order('date', { ascending: true })
+    ]);
+    if (pRes.data) prospects = pRes.data;
+    if (mRes.data) metrics = mRes.data;
+
+    // Hide loading, show app on first load
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = '';
+
+    updateMetrics();
+    updateTable();
+    updateCharts();
+    updateTimestamp();
 }
 
-function computeStats() {
-  const total = prospects.length;
-  const emailsSent = prospects.filter(p => !['Not Started', 'Researching'].includes(p.outreach_status)).length;
-  const responses = prospects.filter(p => ['Responded', 'Meeting Set', 'Won'].includes(p.outreach_status)).length;
-  const meetings = prospects.filter(p => p.meeting_booked).length;
-  const won = prospects.filter(p => p.outreach_status === 'Won').length;
-  const responseRate = emailsSent > 0 ? ((responses / emailsSent) * 100).toFixed(1) : '0';
-  const meetingRate = emailsSent > 0 ? ((meetings / emailsSent) * 100).toFixed(1) : '0';
-  return { total, emailsSent, responses, meetings, won, responseRate, meetingRate };
+// --- Metric cards: just update text ---
+function updateMetrics() {
+    const total = prospects.length;
+    const emailsSent = prospects.filter(p => !['Not Started', 'Researching'].includes(p.outreach_status)).length;
+    const responses = prospects.filter(p => ['Responded', 'Meeting Set', 'Won'].includes(p.outreach_status)).length;
+    const meetings = prospects.filter(p => p.meeting_booked).length;
+    const won = prospects.filter(p => p.outreach_status === 'Won').length;
+    const responseRate = emailsSent > 0 ? ((responses / emailsSent) * 100).toFixed(1) : '0';
+    const meetingRate = emailsSent > 0 ? ((meetings / emailsSent) * 100).toFixed(1) : '0';
+
+    document.getElementById('m-total').textContent = total;
+    document.getElementById('m-emails').textContent = emailsSent;
+    document.getElementById('m-responses').textContent = responses;
+    document.getElementById('m-meetings').textContent = meetings;
+    document.getElementById('m-won').textContent = won;
+    document.getElementById('m-responses-sub').textContent = responseRate + '% response rate';
+    document.getElementById('m-meetings-sub').textContent = meetingRate + '% meeting rate';
 }
 
-function fmtDate(d) { if (!d) return 'â'; return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
-
-function render() {
-  const s = computeStats();
-  const filtered = currentFilter === 'All' ? prospects : prospects.filter(p => p.outreach_status === currentFilter);
-
-  document.getElementById('app').innerHTML = `
-    <div class="header">
-      <div>
-        <h1>&#x1F4E1;  Outreach Command Center</h1>
-        <div class="sub">Live from Supabase · Auto-refreshes every 60s · ${new Date().toLocaleTimeString()}</div>
-      </div>
-      <button class="btn" onclick="showAddModal()">+ Add Prospect</button>
-    </div>
-    <div class="container">
-      <div class="metrics">
-        <div class="metric-card"><div class="metric-label">Total Prospects</div><div class="metric-value">${s.total}</div><div class="metric-sub">in pipeline</div></div>
-        <div class="metric-card"><div class="metric-label">Emails Sent</div><div class="metric-value" style="color:var(--blue)">${s.emailsSent}</div><div class="metric-sub">outreach started</div></div>
-        <div class="metric-card"><div class="metric-label">Responses</div><div class="metric-value" style="color:var(--yellow)">${s.responses}</div><div class="metric-sub">${s.responseRate}% response rate</div></div>
-        <div class="metric-card"><div class="metric-label">Meetings</div><div class="metric-value" style="color:var(--orange)">${s.meetings}</div><div class="metric-sub">${s.meetingRate}% meeting rate</div></div>
-        <div class="metric-card"><div class="metric-label">Deals Won</div><div class="metric-value" style="color:var(--green)">${s.won}</div><div class="metric-sub">closed</div></div>
-      </div>
-      <div class="charts">
-        <div class="chart-card"><div class="chart-title">Daily Activity</div><canvas id="activityChart" height="200"></canvas></div>
-        <div class="chart-card"><div class="chart-title">Pipeline Status</div><canvas id="statusChart" height="200"></canvas></div>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <h3>Pipeline (${filtered.length})</h3>
-          <div class="filters">
-            ${['All', ...STATUSES].map(st => `<button class="filter-btn ${currentFilter === st ? 'active' : ''}" onclick="setFilter('${st}')">${st}</button>`).join('')}
-          </div>
-        </div>
-        <div style="overflow-x:auto">
-          <table>
-            <thead><tr><th>Company</th><th>Job Title</th><th>Decision Maker</th><th>Service Fit</th><th>Status</th><th>Found</th><th>Actions</th></tr></thead>
-            <tbody>
-              ${filtered.length === 0 ? '<tr><td colspan="7" class="empty">No prospects in this status</td></tr>' :
-                filtered.map(p => `<tr>
-                  <td><div class="company-name">${esc(p.company_name)}</div><div class="company-detail">${esc(p.industry||'')} ${p.company_size ? '· '+p.company_size : ''}</div></td>
-                  <td style="color:var(--muted)">${esc(p.job_title||'â')}</td>
-                  <td><div>${esc(p.decision_maker||'â')}</div>${p.dm_title ? '<div class="company-detail">'+esc(p.dm_title)+'</div>' : ''}</td>
-                  <td>${p.service_fit ? `<span class="badge" style="background:${SERVICE_COLORS[p.service_fit]}22;color:${SERVICE_COLORS[p.service_fit]}">${p.service_fit}</span>` : 'â'}</td>
-                  <td><select class="status-select" style="background:${STATUS_COLORS[p.outreach_status]}22;color:${STATUS_COLORS[p.outreach_status]}" onchange="updateStatus('${p.id}',this.value)">
-                    ${STATUSES.map(st => `<option value="${st}" ${p.outreach_status===st?'selected':''}>${st}</option>`).join('')}
-                  </select></td>
-                  <td style="color:var(--muted);font-size:12px">${fmtDate(p.date_found)}</td>
-                  <td>${p.dm_email ? `<a href="mailto:${esc(p.dm_email)}" class="link">Email</a>` : ''}${p.dm_linkedin ? ` <a href="${p.dm_linkedin.startsWith('http')?esc(p.dm_linkedin):'https://'+esc(p.dm_linkedin)}" target="_blank" class="link" style="color:var(--blue);margin-left:8px">LinkedIn</a>` : ''}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  `;
-  renderCharts();
+// --- Timestamp ---
+function updateTimestamp() {
+    document.getElementById('subHeader').textContent =
+        'Live from Supabase \u00b7 Auto-refreshes every 60s \u00b7 ' + new Date().toLocaleTimeString();
 }
 
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+// --- Filter bar: build once ---
+function buildFilterBar() {
+    const bar = document.getElementById('filterBar');
+    bar.innerHTML = '';
+    ['All', ...STATUSES].forEach(st => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn' + (currentFilter === st ? ' active' : '');
+        btn.textContent = st;
+        btn.onclick = () => { currentFilter = st; highlightFilter(); updateTable(); };
+        bar.appendChild(btn);
+    });
+}
 
-function setFilter(f) { currentFilter = f; render(); }
+function highlightFilter() {
+    const btns = document.querySelectorAll('#filterBar .filter-btn');
+    const labels = ['All', ...STATUSES];
+    btns.forEach((btn, i) => {
+        btn.className = 'filter-btn' + (currentFilter === labels[i] ? ' active' : '');
+    });
+}
 
+// --- Table: only rebuild tbody ---
+function updateTable() {
+    const filtered = currentFilter === 'All' ? prospects : prospects.filter(p => p.outreach_status === currentFilter);
+    document.getElementById('pipelineCount').textContent = 'Pipeline (' + filtered.length + ')';
+
+    const tbody = document.getElementById('tableBody');
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">No prospects in this status</td></tr>';
+        return;
+    }
+    tbody.innerHTML = filtered.map(p => `<tr>
+        <td><div class="company-name">${esc(p.company_name)}</div><div class="company-detail">${esc(p.industry || '')} ${p.company_size ? '\u00b7 ' + p.company_size : ''}</div></td>
+        <td style="color:var(--muted)">${esc(p.job_title || '\u2014')}</td>
+        <td><div>${esc(p.decision_maker || '\u2014')}</div>${p.dm_title ? '<div class="company-detail">' + esc(p.dm_title) + '</div>' : ''}</td>
+        <td>${p.service_fit ? '<span class="badge" style="background:' + (SERVICE_COLORS[p.service_fit] || '#6b7280') + '22;color:' + (SERVICE_COLORS[p.service_fit] || '#6b7280') + '">' + esc(p.service_fit) + '</span>' : '\u2014'}</td>
+        <td><select class="status-select" style="background:${(STATUS_COLORS[p.outreach_status] || '#6b7280')}22;color:${STATUS_COLORS[p.outreach_status] || '#6b7280'}" onchange="updateStatus('${p.id}',this.value)">
+            ${STATUSES.map(st => '<option value="' + st + '"' + (p.outreach_status === st ? ' selected' : '') + '>' + st + '</option>').join('')}
+        </select></td>
+        <td style="color:var(--muted);font-size:12px">${fmtDate(p.date_found)}</td>
+        <td>${p.dm_email ? '<a href="mailto:' + esc(p.dm_email) + '" class="link">Email</a>' : ''}${p.dm_linkedin ? ' <a href="' + (p.dm_linkedin.startsWith('http') ? esc(p.dm_linkedin) : 'https://' + esc(p.dm_linkedin)) + '" target="_blank" class="link" style="color:var(--blue);margin-left:8px">LinkedIn</a>' : ''}</td>
+    </tr>`).join('');
+}
+
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function fmtDate(d) {
+    if (!d) return '\u2014';
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// --- Charts: create once, update data ---
+function updateCharts() {
+    if (!chartsInitialized) {
+        initCharts();
+        chartsInitialized = true;
+        return;
+    }
+    // Update activity chart data
+    if (activityChart && metrics.length) {
+        activityChart.data.labels = metrics.map(m => new Date(m.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        activityChart.data.datasets[0].data = metrics.map(m => m.emails_sent);
+        activityChart.data.datasets[1].data = metrics.map(m => m.responses);
+        activityChart.data.datasets[2].data = metrics.map(m => m.meetings_booked);
+        activityChart.update('none'); // 'none' disables animation on update
+    }
+    // Update status chart data
+    if (statusChart) {
+        const counts = {};
+        prospects.forEach(p => { counts[p.outreach_status] = (counts[p.outreach_status] || 0) + 1; });
+        const labels = Object.keys(counts).filter(k => counts[k] > 0);
+        statusChart.data.labels = labels;
+        statusChart.data.datasets[0].data = labels.map(l => counts[l]);
+        statusChart.data.datasets[0].backgroundColor = labels.map(l => STATUS_COLORS[l] || '#6b7280');
+        statusChart.update('none');
+    }
+}
+
+function initCharts() {
+    const chartOpts = { color: '#8b8fa3', font: { size: 11 } };
+    const gridOpts = { color: '#2a2e3a' };
+    const tickOpts = { color: '#8b8fa3', font: { size: 10 } };
+
+    // Activity chart
+    const actCtx = document.getElementById('activityChart')?.getContext('2d');
+    if (actCtx) {
+        activityChart = new Chart(actCtx, {
+            type: 'line',
+            data: {
+                labels: metrics.map(m => new Date(m.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [
+                    { label: 'Emails Sent', data: metrics.map(m => m.emails_sent), borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.4 },
+                    { label: 'Responses', data: metrics.map(m => m.responses), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.4 },
+                    { label: 'Meetings', data: metrics.map(m => m.meetings_booked), borderColor: '#f97316', backgroundColor: 'transparent', borderDash: [4, 4], tension: 0.4 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 600 },
+                plugins: { legend: { labels: chartOpts } },
+                scales: { x: { ticks: tickOpts, grid: gridOpts }, y: { ticks: tickOpts, grid: gridOpts } }
+            }
+        });
+    }
+
+    // Status doughnut
+    const stCtx = document.getElementById('statusChart')?.getContext('2d');
+    if (stCtx) {
+        const counts = {};
+        prospects.forEach(p => { counts[p.outreach_status] = (counts[p.outreach_status] || 0) + 1; });
+        const labels = Object.keys(counts).filter(k => counts[k] > 0);
+        statusChart = new Chart(stCtx, {
+            type: 'doughnut',
+            data: {
+                labels,
+                datasets: [{ data: labels.map(l => counts[l]), backgroundColor: labels.map(l => STATUS_COLORS[l] || '#6b7280'), borderWidth: 0 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '55%',
+                animation: { duration: 600 },
+                plugins: { legend: { position: 'bottom', labels: { color: '#8b8fa3', font: { size: 10 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 } } }
+            }
+        });
+    }
+}
+
+// --- Status update: optimistic, no full re-render ---
 async function updateStatus(id, status) {
-  const updates = { outreach_status: status };
-  const p = prospects.find(x => x.id === id);
-  if (status === 'Email Sent' && !p.first_contact_date) updates.first_contact_date = new Date().toISOString().split('T')[0];
-  if (status === 'Meeting Set') updates.meeting_booked = true;
-  await sb.from('prospects').update(updates).eq('id', id);
-  const idx = prospects.findIndex(x => x.id === id);
-  if (idx >= 0) Object.assign(prospects[idx], updates);
-  render();
+    const updates = { outreach_status: status };
+    const p = prospects.find(x => x.id === id);
+    if (status === 'Email Sent' && p && !p.first_contact_date) updates.first_contact_date = new Date().toISOString().split('T')[0];
+    if (status === 'Meeting Set') updates.meeting_booked = true;
+
+    // Optimistic local update
+    const idx = prospects.findIndex(x => x.id === id);
+    if (idx >= 0) Object.assign(prospects[idx], updates);
+    updateMetrics();
+    updateTable();
+    updateCharts();
+
+    // Push to Supabase in background
+    await sb.from('prospects').update(updates).eq('id', id);
 }
 
+// --- Add prospect modal ---
 function showAddModal() {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
-  overlay.innerHTML = `
-    <div class="modal">
-      <h3>Add Prospect</h3>
-      <input id="f_company" placeholder="Company Name *">
-      <div class="form-row"><input id="f_industry" placeholder="Industry"><input id="f_location" placeholder="Location"></div>
-      <input id="f_job" placeholder="Job Title (from Indeed)">
-      <div class="form-row"><input id="f_dm" placeholder="Decision Maker Name"><input id="f_dmtitle" placeholder="DM Title"></div>
-      <div class="form-row"><input id="f_email" placeholder="DM Email"><input id="f_linkedin" placeholder="DM LinkedIn URL"></div>
-      <div class="form-row">
-        <select id="f_service"><option>Marketing/Ads</option><option>AI App Building</option><option>Automations</option><option>Consulting/Strategy</option><option>Multiple Services</option></select>
-        <select id="f_size"><option value="">Company Size</option><option>1-10</option><option>11-50</option><option>51-200</option><option>201-500</option><option>500+</option></select>
-      </div>
-      <textarea id="f_notes" placeholder="Notes" rows="2"></textarea>
-      <button class="btn" style="width:100%" onclick="addProspect()">Add to Pipeline</button>
-    </div>
-  `;
-  document.body.appendChild(overlay);
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+    overlay.innerHTML = `
+        <div class="modal">
+            <h3>Add Prospect</h3>
+            <input id="f_company" placeholder="Company Name *">
+            <div class="form-row"><input id="f_industry" placeholder="Industry"><input id="f_location" placeholder="Location"></div>
+            <input id="f_job" placeholder="Job Title (from Indeed)">
+            <div class="form-row"><input id="f_dm" placeholder="Decision Maker Name"><input id="f_dmtitle" placeholder="DM Title"></div>
+            <div class="form-row"><input id="f_email" placeholder="DM Email"><input id="f_linkedin" placeholder="DM LinkedIn URL"></div>
+            <div class="form-row">
+                <select id="f_service"><option>Marketing/Ads</option><option>AI App Building</option><option>Automations</option><option>Consulting/Strategy</option><option>Multiple Services</option></select>
+                <select id="f_size"><option value="">Company Size</option><option>1-10</option><option>11-50</option><option>51-200</option><option>201-500</option><option>500+</option></select>
+            </div>
+            <textarea id="f_notes" placeholder="Notes" rows="2"></textarea>
+            <button class="btn" style="width:100%" onclick="addProspect()">Add to Pipeline</button>
+        </div>`;
+    document.body.appendChild(overlay);
 }
 
 async function addProspect() {
-  const company = document.getElementById('f_company').value.trim();
-  if (!company) return;
-  const row = {
-    company_name: company,
-    industry: document.getElementById('f_industry').value.trim() || null,
-    location: document.getElementById('f_location').value.trim() || null,
-    job_title: document.getElementById('f_job').value.trim() || null,
-    decision_maker: document.getElementById('f_dm').value.trim() || null,
-    dm_title: document.getElementById('f_dmtitle').value.trim() || null,
-    dm_email: document.getElementById('f_email').value.trim() || null,
-    dm_linkedin: document.getElementById('f_linkedin').value.trim() || null,
-    service_fit: document.getElementById('f_service').value,
-    company_size: document.getElementById('f_size').value || null,
-    notes: document.getElementById('f_notes').value.trim() || null,
-    date_found: new Date().toISOString().split('T')[0],
-  };
-  const { data } = await sb.from('prospects').insert([row]).select();
-  if (data) prospects.unshift(data[0]);
-  document.querySelector('.modal-overlay')?.remove();
-  render();
+    const company = document.getElementById('f_company').value.trim();
+    if (!company) return;
+    const row = {
+        company_name: company,
+        industry: document.getElementById('f_industry').value.trim() || null,
+        location: document.getElementById('f_location').value.trim() || null,
+        job_title: document.getElementById('f_job').value.trim() || null,
+        decision_maker: document.getElementById('f_dm').value.trim() || null,
+        dm_title: document.getElementById('f_dmtitle').value.trim() || null,
+        dm_email: document.getElementById('f_email').value.trim() || null,
+        dm_linkedin: document.getElementById('f_linkedin').value.trim() || null,
+        service_fit: document.getElementById('f_service').value,
+        company_size: document.getElementById('f_size').value || null,
+        notes: document.getElementById('f_notes').value.trim() || null,
+        date_found: new Date().toISOString().split('T')[0]
+    };
+    const { data } = await sb.from('prospects').insert([row]).select();
+    if (data) prospects.unshift(data[0]);
+    document.querySelector('.modal-overlay')?.remove();
+    updateMetrics();
+    updateTable();
+    updateCharts();
 }
 
-function renderCharts() {
-  // Activity chart
-  const actCtx = document.getElementById('activityChart')?.getContext('2d');
-  if (actCtx && metrics.length) {
-    if (activityChart) activityChart.destroy();
-    activityChart = new Chart(actCtx, {
-      type: 'line',
-      data: {
-        labels: metrics.map(m => new Date(m.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-        datasets: [
-          { label: 'Emails Sent', data: metrics.map(m => m.emails_sent), borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.4 },
-          { label: 'Responses', data: metrics.map(m => m.responses), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', fill: true, tension: 0.4 },
-          { label: 'Meetings', data: metrics.map(m => m.meetings_booked), borderColor: '#f97316', backgroundColor: 'transparent', borderDash: [4,4], tension: 0.4 },
-        ]
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#8b8fa3', font: { size: 11 } } } },
-        scales: { x: { ticks: { color: '#8b8fa3', font: { size: 10 } }, grid: { color: '#2a2e3a' } }, y: { ticks: { color: '#8b8fa3', font: { size: 10 } }, grid: { color: '#2a2e3a' } } } }
-    });
-  }
-
-  // Status pie
-  const stCtx = document.getElementById('statusChart')?.getContext('2d');
-  if (stCtx) {
-    const counts = {};
-    prospects.forEach(p => { counts[p.outreach_status] = (counts[p.outreach_status]||0) + 1; });
-    const labels = Object.keys(counts).filter(k => counts[k] > 0);
-    if (statusChart) statusChart.destroy();
-    statusChart = new Chart(stCtx, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{ data: labels.map(l => counts[l]), backgroundColor: labels.map(l => STATUS_COLORS[l]||'#6b7280'), borderWidth: 0 }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '55%',
-        plugins: { legend: { position: 'bottom', labels: { color: '#8b8fa3', font: { size: 10 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 } } } }
-    });
-  }
-}
-
-// Init
+// --- Init ---
+buildFilterBar();
 fetchData();
 setInterval(fetchData, 60000);
 </script>
